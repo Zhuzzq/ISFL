@@ -4,6 +4,5 @@ This repository is the *PyTorch* implemention of ISFL, a **f**ederated **l**earn
 
 
 
-The codes will be uploaded after the paper preprinted at *arXiv*.
-
+The codes will be uploaded after the paper accepted.
 
