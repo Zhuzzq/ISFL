@@ -7,7 +7,7 @@ from math import gamma
 from threading import local
 import torch
 from torchvision import datasets
-from nn_models import SMLP, MLP_3, CNN4mnist, MultiCNN4fmnist, CNNFashion_Mnist, Res18, CNNCifar, ResNet8, oriResNet9, ResNet8_moon, oriResNet9_moon, ResNet9, ResNet9_moon, EfficientNetB0
+from nn_models import SMLP, CNNFashion_Mnist, Res18, CNNCifar, ResNet8, ResNet8_moon, oriResNet9_moon, ResNet9, ResNet9_moon, EfficientNetB0
 import argparse
 
 

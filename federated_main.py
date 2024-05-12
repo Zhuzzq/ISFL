@@ -34,7 +34,6 @@ print(f"Using {device} device")
 
 if args.seed == -1:
     seed = random.randint(0, 23)
-    # seed = 13
 else:
     seed = args.seed
 
@@ -44,16 +43,6 @@ torch.manual_seed(seed)
 
 
 if __name__ == '__main__':
-
-    # argvs: usr_num, global_epoch, local_epoch, dataset, iid, model
-    # num_usr = int(sys.argv[1])
-    # global_epoch = int(sys.argv[2])
-    # local_epoch = int(sys.argv[3])
-    # dataset_name = sys.argv[4]
-    # is_iid = int(sys.argv[5])
-    # sample_ratio = float(sys.argv[6])
-    # non_iid_ratio = float(sys.argv[7])
-    # lips_size = int(sys.argv[8])
     num_usr = args.num_usr
     global_epoch = args.global_epoch
     local_epoch = args.local_epoch
@@ -168,17 +157,10 @@ if __name__ == '__main__':
 
         # update global weights
         global_weights = average_weights(local_weights)
-        # old_model = copy.deepcopy(global_model)
-        global_model.load_state_dict(global_weights)
-        # gds.append(param_deviation(list(old_model.parameters()), list(global_model.parameters())))
-        # del old_model
-        # print('average gradient', gds[-1])
 
-        # global test
-        # global_train_loss, train_acc = test(train_dataloader, global_model, loss_fn)
+        global_model.load_state_dict(global_weights)
+
         global_test_loss, test_acc, test_acc5 = topk_test(test_dataloader, global_model, loss_fn, device)
-        # train_loss.append(global_train_loss)
-        # train_accuracy.append(train_acc)
         test_loss.append(global_test_loss)
         test_accuracy.append(test_acc)
         test_accuracy5.append(test_acc5)
@@ -206,9 +188,9 @@ if __name__ == '__main__':
 
     # Saving the objects train_loss and train_accuracy:
 
-    file_name = f'./logs/records/fedavg_N{num_usr}_G{global_epoch}_L{local_epoch}_D{dataset_name}_iid{is_iid}-{non_iid_ratio}_B{batch_size}_S{seed}_L{lips_size}_acc{max(test_accuracy)}_acc5{max(test_accuracy5)}-{model_time}.pkl'
+    # file_name = f'./logs/records/fedavg_N{num_usr}_G{global_epoch}_L{local_epoch}_D{dataset_name}_iid{is_iid}-{non_iid_ratio}_B{batch_size}_S{seed}_L{lips_size}_acc{max(test_accuracy)}_acc5{max(test_accuracy5)}-{model_time}.pkl'
 
-    with open(file_name, 'wb') as f:
-        pickle.dump([usr_data_st, lip_stat, train_loss, ta_accuracy, test_loss, test_accuracy, max_lips, theta_devs, cross_dev, gds, test_accuracy5], f)
+    # with open(file_name, 'wb') as f:
+    #     pickle.dump([usr_data_st, lip_stat, train_loss, ta_accuracy, test_loss, test_accuracy, max_lips, theta_devs, cross_dev, gds, test_accuracy5], f)
 
     print('\n Total Run Time: {0:0.4f}'.format(time.time() - start_time))

@@ -12,9 +12,23 @@ ISFL proceeds as the following work flow:
 
 - The optimal importance sampling weights for local training data are also solved through a water-filling approach.
 
+  
+
+### Run
+
+An instance of running ISFL in bash: 
+
+```bash
+python3 ./sampling_is_federated_main.py -N {usr_num} -G {g_round} -L {l_epoch} -D cifar10 -iid 3 -nr {dr} -ls 2000 -s 0.02 -GPU {gpu}
+```
+
+See the available parameter settings in `utils.py`.
+
+
+
 ### References
 
-- If you find the codes useful, please cite the following in your manuscript:
+- If you find the codes useful, please cite the following paper in your manuscript:
 
 ```bibtex
 @article{zhu2024isfl,
@@ -30,4 +44,3 @@ ISFL proceeds as the following work flow:
 ```
 
 <hr>
-

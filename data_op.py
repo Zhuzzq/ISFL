@@ -110,7 +110,7 @@ def dirichlet_noniid(dataset, num_users, alpha=1.0, sample_num=0):
     return dict_users
 
 
-def mixed_noniid(dataset, num_users, ratio, num_shard=2):
+def mixed_noniid(dataset, num_users, ratio):
     """
     Sample mixed non-I.I.D client data from MNIST dataset
     :param dataset:
@@ -136,7 +136,7 @@ def mixed_noniid(dataset, num_users, ratio, num_shard=2):
 
     # non-iid sample
     # num_items = int(num_shards / num_users)
-    num_items = num_shard
+    num_items = 2
     num_imgs = 500 - iidnum_items // num_items  # mnist 300? cifar 500
     # num_shards = int(noniid_num / num_imgs)
     num_shards = int(len(dataset) / num_imgs)
@@ -152,7 +152,7 @@ def mixed_noniid(dataset, num_users, ratio, num_shard=2):
 
     # divide and assign shards/client
     for i in range(num_users):
-        rand_set = set(np.random.choice(idx_shard, num_items, replace=True))
+        rand_set = set(np.random.choice(idx_shard, num_items, replace=False))
         idx_shard = list(set(idx_shard) - rand_set)
 
         # if i == 7:
@@ -164,7 +164,7 @@ def mixed_noniid(dataset, num_users, ratio, num_shard=2):
     return dict_users
 
 
-def get_dataset(name, iid, num_usr, ratio=0.5, alpha=1.0, num_shard=2):
+def get_dataset(name, iid, num_usr, ratio=0.5, alpha=1.0):
     """ Returns train and test datasets and a user group which is a dict where
     the keys are the user index and the values are the corresponding data for
     each of those users.
@@ -195,7 +195,7 @@ def get_dataset(name, iid, num_usr, ratio=0.5, alpha=1.0, num_shard=2):
             # Sample IID user data
             user_groups = iid_data(train_dataset, num_usr, 1000)
         elif iid == 2:
-            user_groups = mixed_noniid(train_dataset, num_usr, ratio, num_shard=num_shard)
+            user_groups = mixed_noniid(train_dataset, num_usr, ratio)
         elif iid == 3:
             user_groups = dirichlet_noniid(train_dataset, num_usr, alpha, 1000 * num_usr)
         else:

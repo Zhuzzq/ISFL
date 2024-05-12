@@ -45,17 +45,6 @@ torch.manual_seed(seed)
 
 
 if __name__ == '__main__':
-
-    # argvs: usr_num, global_epoch, local_epoch, dataset, iid, model
-    # num_usr = int(sys.argv[1])
-    # global_epoch = int(sys.argv[2])
-    # local_epoch = int(sys.argv[3])
-    # dataset_name = sys.argv[4]
-    # is_iid = int(sys.argv[5])
-    # sample_ratio = float(sys.argv[6])
-    # non_iid_ratio = float(sys.argv[7])
-    # lips_size = int(sys.argv[8])
-    # sigma = float(sys.argv[9])
     num_usr = args.num_usr
     global_epoch = args.global_epoch
     local_epoch = args.local_epoch
@@ -204,45 +193,30 @@ if __name__ == '__main__':
             # usr_lip[usr] = cal_all_lips(local_datasets[usr], device, local_models[usr], global_model, loss_fn, local_opts[usr], global_opt, int((1 - non_iid_ratio) * len(train_dataset)))
             usr_lip[usr] = cal_all_lips(dataset4lips, device, local_models[usr], global_model, loss_fn, cl=cl_num)
             lips = []
-            # theta_d.append(param_deviation(list(local_models[usr].parameters()), list(global_model.parameters())))
-            # cross_d.append(param_deviation(list(local_models[usr].parameters()), list(c_model.parameters())))
+
             for k in sorted(usr_lip[usr].keys()):
-                # lips.append(np.float32(np.partition(usr_lip[usr][k], kth=-1)[-1]))  # k-th max lips
-                # lips.append(np.float32(np.mean(usr_lip[usr][k])))
                 lips.append(np.float32(max(usr_lip[usr][k])))
             max_lip.append(lips)
             # print(lips)
             res_w = cal_weightings(torch.tensor(lips), cl_num, global_p, torch.tensor(usr_data_st[usr][1]), sigma)
             ws[usr] = res_w
-        # lip_stat.append(usr_lip)
         w_records.append(ws)
         max_lips.append(max_lip)
-        # theta_dev.append(theta_d)
+
 
         # update global weights
         global_weights = average_weights(local_weights)
-        # old_model = copy.deepcopy(global_model)
         global_model.load_state_dict(global_weights)
-        # gds.append(param_deviation(list(old_model.parameters()), list(global_model.parameters())))
-        # del old_model
-        # print('average gradient', gds[-1])
 
-        # cross_d.append(param_deviation(list(global_model.parameters()), list(c_model.parameters())))
-        # cross_dev.append(cross_d)
-
-        # global test
-        # global_train_loss, train_acc = test(train_dataloader, global_model, loss_fn)
         global_test_loss, test_acc, test_acc5 = topk_test(test_dataloader, global_model, loss_fn, device)
-        # train_loss.append(global_train_loss)
-        # train_accuracy.append(train_acc)
+
         test_loss.append(global_test_loss)
         test_accuracy.append(test_acc)
         test_accuracy5.append(test_acc5)
 
         logger.add_scalars(f'global/loss', {'test': global_test_loss}, epoch + 1)
         logger.add_scalars(f'global/acc', {'test': test_acc}, epoch + 1)
-        # logger.add_scalars(f'global/loss', {'train': global_train_loss, 'test': global_test_loss}, epoch + 1)
-        # logger.add_scalars(f'global/acc', {'train': train_acc, 'test': test_acc}, epoch + 1)
+
 
         # test on c-data
         global_c_test_loss, c_test_acc, c_test_acc5 = topk_test(c_dataloader, global_model, loss_fn, device)
@@ -265,9 +239,9 @@ if __name__ == '__main__':
 
     # Saving the objects train_loss and train_accuracy:
 
-    file_name = f'./logs/records/Sis_N{num_usr}_G{global_epoch}_L{local_epoch}_D{dataset_name}_iid{is_iid}-{non_iid_ratio}_B{batch_size}_S{seed}_L{lips_size}_sigma{sigma}_acc{max(test_accuracy)}_acc5{max(test_accuracy5)}-{model_time}.pkl'
+    # file_name = f'./logs/records/Sis_N{num_usr}_G{global_epoch}_L{local_epoch}_D{dataset_name}_iid{is_iid}-{non_iid_ratio}_B{batch_size}_S{seed}_L{lips_size}_sigma{sigma}_acc{max(test_accuracy)}_acc5{max(test_accuracy5)}-{model_time}.pkl'
 
-    with open(file_name, 'wb') as f:
-        pickle.dump([usr_data_st, lip_stat, w_records, train_loss, ta_accuracy, test_loss, test_accuracy, max_lips, theta_dev, cross_dev, gds, test_accuracy5], f)
+    # with open(file_name, 'wb') as f:
+    #     pickle.dump([usr_data_st, lip_stat, w_records, train_loss, ta_accuracy, test_loss, test_accuracy, max_lips, theta_dev, cross_dev, gds, test_accuracy5], f)
 
     print('\n Total Run Time: {0:0.4f}'.format(time.time() - start_time))
